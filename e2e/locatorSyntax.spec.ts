@@ -25,7 +25,7 @@ test('Locator syntax rules', async ({ page }) => {
   page.locator('[nbinput][placeholder="Email"]')
 
   // by exact text match
-  page.locator(':text("Using the Grid")')
+  page.locator(':text-is("Using the Grid")')
 })
 
 // These are the locators that are used by the user
@@ -61,4 +61,41 @@ test('locating child elements', async ({ page }) => {
     .click()
 
   await page.locator('nb-card').nth(3).getByRole('button').click()
+})
+
+test('locating parent elements', async ({ page }) => {
+  await page
+    .locator('nb-card', { hasText: 'Using the Grid' })
+    .getByRole('textbox', { name: 'Email' })
+    .click()
+
+  await page
+    .locator('nb-card', { has: page.locator('#inputEmail1') })
+    .getByRole('textbox', { name: 'Email' })
+    .click()
+
+  await page
+    .locator('nb-card')
+    .filter({ hasText: 'Basic form' })
+    .getByRole('textbox', { name: 'Email' })
+    .click()
+
+  await page
+    .locator('nb-card')
+    .filter({ has: page.locator('.status-danger') })
+    .getByRole('textbox', { name: 'password' }) // name is case insensitive
+    .click()
+
+  await page
+    .locator('nb-card')
+    .filter({ has: page.locator('nb-checkbox') })
+    .filter({ hasText: 'Sign in' })
+    .getByRole('textbox', { name: 'Email' })
+    .click()
+
+  await page
+    .locator(':text-is("Using the Grid")')
+    .locator('..')
+    .getByRole('textbox', { name: 'Email' })
+    .click()
 })
