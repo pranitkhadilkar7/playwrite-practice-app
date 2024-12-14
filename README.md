@@ -10,10 +10,10 @@ The original repo is here: https://github.com/akveo/ngx-admin
 2. npm start --force
 
 
-### Playwrite
-# Location
+# Playwrite
+### Location
 /e2e
 
-# Commands to run Playwrite Test
+### Commands to run Playwrite Test
 npx playwright test --ui
 Please visit --> https://playwright.dev/docs/intro
