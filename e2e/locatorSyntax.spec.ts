@@ -102,9 +102,34 @@ test('locating parent elements', async ({ page }) => {
 
 test('reusing the locators', async ({ page }) => {
   const basicForm = page.locator('nb-card', { hasText: 'Basic form' })
+  const emailField = basicForm.getByRole('textbox', { name: 'Email' })
 
-  await basicForm.getByRole('textbox', { name: 'Email' }).fill('test@test.com')
+  await emailField.fill('test@test.com')
   await basicForm.getByRole('textbox', { name: 'password' }).fill('password')
   await basicForm.locator('nb-checkbox', { hasText: 'Check me out' }).click()
   await basicForm.getByRole('button', { name: 'Submit' }).click()
+
+  await expect(emailField).toHaveValue('test@test.com')
+})
+
+test('extracting values', async ({ page }) => {
+  // extract single value
+  const basicForm = page.locator('nb-card', { hasText: 'Basic form' })
+  const buttonText = await basicForm.locator('button').textContent()
+  expect(buttonText).toEqual('Submit')
+
+  // extract multiple values
+  const useGridForm = page.locator('nb-card', { hasText: 'Using the Grid' })
+  const allRadioTexts = await useGridForm.locator('nb-radio').allTextContents()
+  expect(allRadioTexts).toContain('Option 1')
+
+  // extract input value
+  const emailField = basicForm.getByRole('textbox', { name: 'Email' })
+  await emailField.fill('test@test.com')
+  const emailValue = await emailField.inputValue()
+  expect(emailValue).toEqual('test@test.com')
+
+  // extract attribute value
+  const placeholderValue = await emailField.getAttribute('placeholder')
+  expect(placeholderValue).toEqual('Email')
 })
