@@ -99,3 +99,12 @@ test('locating parent elements', async ({ page }) => {
     .getByRole('textbox', { name: 'Email' })
     .click()
 })
+
+test('reusing the locators', async ({ page }) => {
+  const basicForm = page.locator('nb-card', { hasText: 'Basic form' })
+
+  await basicForm.getByRole('textbox', { name: 'Email' }).fill('test@test.com')
+  await basicForm.getByRole('textbox', { name: 'password' }).fill('password')
+  await basicForm.locator('nb-checkbox', { hasText: 'Check me out' }).click()
+  await basicForm.getByRole('button', { name: 'Submit' }).click()
+})
