@@ -50,3 +50,28 @@ test.describe('Form Layouts', async () => {
     expect(await radioButton1.isChecked()).toBeFalsy()
   })
 })
+
+test.describe('Modal & Overlays --> Toastr', async () => {
+  test.beforeEach(async ({ page }) => {
+    await page.getByText('Modal & Overlays').click()
+    await page.getByText('Toastr').click()
+  })
+
+  test('checkbox', async ({ page }) => {
+    const checkbox = page.getByRole('checkbox', { name: 'Hide on click' })
+
+    await checkbox.check({ force: true })
+
+    await expect(checkbox).toBeChecked()
+
+    const allCheckboxes = page.getByRole('checkbox')
+
+    for (let checkbox of await allCheckboxes.all()) {
+      await checkbox.check({ force: true })
+      await expect(checkbox).toBeChecked()
+
+      await checkbox.uncheck({ force: true })
+      await expect(checkbox).not.toBeChecked()
+    }
+  })
+})
