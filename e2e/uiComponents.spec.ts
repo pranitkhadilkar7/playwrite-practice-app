@@ -110,3 +110,24 @@ test('list and dropdown', async ({ page }) => {
     await dropdownMenu.click()
   }
 })
+
+test.describe('Modal & Overlays --> Tooltip', async () => {
+  test.beforeEach(async ({ page }) => {
+    await page.getByText('Modal & Overlays').click()
+    await page.getByText('Tooltip').click()
+  })
+
+  test('tooltip', async ({ page }) => {
+    const tooltipCard = page.locator('nb-card', {
+      hasText: 'Tooltip Placements',
+    })
+    const tooltipButton = tooltipCard.getByRole('button', { name: 'Top' })
+
+    await tooltipButton.hover()
+
+    page.getByRole('tooltip', { name: 'This is a tooltip' }) // this wont locate in this case cause we are not using actual tooltip
+
+    const tooltipText = await page.locator('nb-tooltip').textContent()
+    expect(tooltipText).toEqual('This is a tooltip')
+  })
+})
