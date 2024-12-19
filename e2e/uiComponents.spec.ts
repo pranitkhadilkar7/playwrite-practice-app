@@ -75,3 +75,38 @@ test.describe('Modal & Overlays --> Toastr', async () => {
     }
   })
 })
+
+test('list and dropdown', async ({ page }) => {
+  const dropdownMenu = page.locator('ngx-header nb-select')
+  await dropdownMenu.click()
+
+  page.getByRole('list') // to get UL element
+  page.getByRole('listitem') // to get LI element
+
+  const dropdownOptions = page.locator('nb-option-list nb-option')
+  await expect(dropdownOptions).toHaveText([
+    'Light',
+    'Dark',
+    'Cosmic',
+    'Corporate',
+  ])
+
+  const header = page.locator('nb-layout-header')
+
+  await dropdownOptions.filter({ hasText: 'Cosmic' }).click()
+  await expect(header).toHaveCSS('background-color', 'rgb(50, 50, 89)')
+
+  const colors = {
+    Light: 'rgb(255, 255, 255)',
+    Dark: 'rgb(34, 43, 69)',
+    Cosmic: 'rgb(50, 50, 89)',
+    Corporate: 'rgb(255, 255, 255)',
+  }
+
+  await dropdownMenu.click()
+  for (let color in colors) {
+    await dropdownOptions.filter({ hasText: color }).click()
+    await expect(header).toHaveCSS('background-color', colors[color])
+    await dropdownMenu.click()
+  }
+})
