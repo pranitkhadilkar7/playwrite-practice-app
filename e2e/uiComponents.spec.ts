@@ -131,3 +131,27 @@ test.describe('Modal & Overlays --> Tooltip', async () => {
     expect(tooltipText).toEqual('This is a tooltip')
   })
 })
+
+test.describe('Tables & Data --> Smart Table', async () => {
+  test.beforeEach(async ({ page }) => {
+    await page.getByText('Tables & Data').click()
+    await page.getByText('Smart Table').click()
+  })
+
+  test('Dialog Box --> Alert', async ({ page }) => {
+    page.on('dialog', (dialog) => {
+      expect(dialog.message()).toEqual('Are you sure you want to delete?')
+      dialog.accept()
+    })
+
+    await page
+      .getByRole('table')
+      .locator('tr', { hasText: 'mdo@gmail.com' })
+      .locator('.nb-trash')
+      .click()
+
+    await expect(page.getByRole('table').locator('tr').first()).not.toHaveText(
+      'mdo@gmail.com'
+    )
+  })
+})
