@@ -154,4 +154,27 @@ test.describe('Tables & Data --> Smart Table', async () => {
       'mdo@gmail.com'
     )
   })
+
+  test('Web Tables', async ({ page }) => {
+    // change age of the user with email twitter@outlook.com
+    const tableRow = page.getByRole('row', { name: 'twitter@outlook.com' })
+    await tableRow.locator('.nb-edit').click()
+    const ageInput = page.locator('input-editor').getByPlaceholder('Age')
+    await ageInput.clear()
+    await ageInput.fill('35')
+    await page.locator('.nb-checkmark').click()
+    await expect(tableRow.locator('td').nth(6)).toHaveText('35')
+
+    // navigate to page 2 and edit email for row with id 11
+    await page.locator('.ng2-smart-pagination-nav').getByText('2').click()
+    const tableRow2 = page
+      .getByRole('row', { name: '11' })
+      .filter({ has: page.locator('td').nth(1).getByText('11') })
+    await tableRow2.locator('.nb-edit').click()
+    const emailInput = page.locator('input-editor').getByPlaceholder('E-mail')
+    await emailInput.clear()
+    await emailInput.fill('test@test.com')
+    await page.locator('.nb-checkmark').click()
+    await expect(tableRow2.locator('td').nth(5)).toHaveText('test@test.com')
+  })
 })
