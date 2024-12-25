@@ -196,3 +196,22 @@ test.describe('Tables & Data --> Smart Table', async () => {
     }
   })
 })
+
+test.describe('Datepicker', async () => {
+  test.beforeEach(async ({ page }) => {
+    await page.getByText('Forms').click()
+    await page.getByText('Datepicker').click()
+  })
+
+  test('Form Picker', async ({ page }) => {
+    const dateFormInput = page.getByPlaceholder('Form Picker')
+    await dateFormInput.click()
+
+    await page
+      .locator('[class="day-cell ng-star-inserted"]')
+      .getByText('14', { exact: true })
+      .click()
+
+    await expect(dateFormInput).toHaveValue('Dec 14, 2024')
+  })
+})
