@@ -176,5 +176,23 @@ test.describe('Tables & Data --> Smart Table', async () => {
     await emailInput.fill('test@test.com')
     await page.locator('.nb-checkmark').click()
     await expect(tableRow2.locator('td').nth(5)).toHaveText('test@test.com')
+
+    // Test age Filter
+    const ages = ['20', '30', '40', '200']
+    const ageFilter = page.locator('input-filter').getByPlaceholder('Age')
+    for (let age of ages) {
+      await ageFilter.fill(age)
+      await page.waitForTimeout(500)
+      const tableRows = page.locator('tbody').locator('tr')
+      const tableRowsCount = await tableRows.count()
+      for (let row of await tableRows.all()) {
+        const ageValue = await row.locator('td').last().textContent()
+        if (tableRowsCount) {
+          expect(ageValue).toEqual(age)
+        } else {
+          expect(ageValue).not.toEqual(age)
+        }
+      }
+    }
   })
 })
